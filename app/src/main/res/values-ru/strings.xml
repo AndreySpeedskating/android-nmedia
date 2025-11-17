@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">НМедиа</string>
+    <string name="hello">Привет, Мир!</string>
+    <string name="welcome_message">Добро пожаловать в наше приложение</string>
+</resources>

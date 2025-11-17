@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NMedia</string>
+    <string name="hello">Hello World!</string>
+    <string name="welcome_message">Welcome to our app</string>
 </resources>
