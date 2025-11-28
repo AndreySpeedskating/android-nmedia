@@ -17,9 +17,14 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        println(resources.displayMetrics.heightPixels)
-        println(resources.displayMetrics.widthPixels)
-        println(resources.displayMetrics.densityDpi)
-        println(resources.displayMetrics.density)
+        println(resources.displayMetrics.heightPixels) // 1794
+        println(resources.displayMetrics.widthPixels) // 1080
+        println(resources.displayMetrics.densityDpi) // 420
+        println(resources.displayMetrics.density) // 2.625
+
     }
 }
+
+
+//        println(R.string.hello) // число
+//        println(getString(R.string.hello)) // "Привет, Мир!" или "Hello World!"
