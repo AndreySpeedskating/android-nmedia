@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -29,7 +28,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.shareById(post.id)
                 Toast.makeText(
                     this@MainActivity,
-                    "Поделились записью \"${post.content.take(20)}...\"",
+                    "Поделились записью",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -43,11 +42,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        // Настройка RecyclerView
         binding.postsList.layoutManager = LinearLayoutManager(this)
         binding.postsList.adapter = adapter
 
-        // Подписываемся на изменения данных
-        viewModel.data.observe(this) { posts: List<Post>? ->
+        // Подписка на данные из ViewModel
+        viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
     }

@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
 
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
