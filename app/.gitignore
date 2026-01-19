@@ -1,6 +1,7 @@
 reserve.md
 HELP.md
 .gradle
+.kotlin
 build/
 
 ### STS ###
