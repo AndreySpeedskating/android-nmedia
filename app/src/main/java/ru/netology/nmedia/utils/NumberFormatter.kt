@@ -1,9 +1,6 @@
-package ru.netology.nmedia
-
-import kotlin.math.abs
+package ru.netology.nmedia.utils
 
 object NumberFormatter {
-
     /**
      * Форматирует число в краткую запись (1K, 1.2M и т.д.)
      * Правила:
@@ -12,12 +9,12 @@ object NumberFormatter {
      * - 10000-999999: без сотен (10K, 150K)
      * - >= 1000000: с сотнями тысяч (1.3M, 10.1M)
      */
-    fun formatCompact(number: Long): String {
+    fun formatCompact(number: Int): String {
         return when {
             number < 1000 -> number.toString()
             number < 10000 -> {
                 val hundreds = (number % 1000) / 100
-                if (hundreds == 0L) {
+                if (hundreds == 0) {
                     "${number / 1000}K"
                 } else {
                     "${number / 1000}.${hundreds}K"
@@ -28,7 +25,7 @@ object NumberFormatter {
             }
             number < 10000000 -> {
                 val hundredsThousands = (number % 1000000) / 100000
-                if (hundredsThousands == 0L) {
+                if (hundredsThousands == 0) {
                     "${number / 1000000}M"
                 } else {
                     "${number / 1000000}.${hundredsThousands}M"
@@ -40,10 +37,6 @@ object NumberFormatter {
         }
     }
 
-    // Перегрузка для Int
-    fun formatCompact(number: Int): String = formatCompact(number.toLong())
-
-    // Тестовые примеры для проверки
     fun testFormatting() {
         val testCases = listOf(
             999 to "999",
