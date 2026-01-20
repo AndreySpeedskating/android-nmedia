@@ -1,30 +1,37 @@
 package ru.netology.nmedia.activity
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
+import ru.netology.nmedia.databinding.FragmentEditPostBinding
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: PostViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val adapter = PostAdapter(object : PostAdapter.OnInteractionListener {
-            override fun onLike(post: ru.netology.nmedia.dto.Post) {
+            override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
             }
 
-            override fun onShare(post: ru.netology.nmedia.dto.Post) {
+            override fun onShare(post: Post) {
                 viewModel.shareById(post.id)
                 Toast.makeText(
                     this@MainActivity,
@@ -33,22 +40,112 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onMenu(post: ru.netology.nmedia.dto.Post) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Меню поста ${post.id}",
-                    Toast.LENGTH_SHORT
-                ).show()
+            override fun onEdit(post: Post) {
+                showEditDialog(post)
+            }
+
+            override fun onRemove(post: Post) {
+                showDeleteDialog(post)
+            }
+
+            override fun onMenu(post: Post) {
+                showMenuDialog(post)
             }
         })
 
-        // Настройка RecyclerView
         binding.postsList.layoutManager = LinearLayoutManager(this)
         binding.postsList.adapter = adapter
 
-        // Подписка на данные из ViewModel
+        // Кнопка добавления нового поста
+        binding.fab.setOnClickListener {
+            showEditDialog(Post.empty)
+        }
+
+        // Подписка на данные
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
         }
+
+        // Наблюдение за редактируемым постом
+        viewModel.edited.observe(this) { post ->
+            if (post == null) {
+                // Скрываем диалог редактирования
+            }
+        }
+    }
+
+    private fun showEditDialog(post: Post) {
+        val dialogBinding = FragmentEditPostBinding.inflate(LayoutInflater.from(this))
+
+        dialogBinding.content.setText(post.content)
+
+        val isEditing = post.id != 0L
+        dialogBinding.editingButtons.visibility =
+            if (isEditing) View.VISIBLE else View.GONE
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(if (isEditing) R.string.post_edit_title else R.string.post_new_title)
+            .setView(dialogBinding.root)
+            .setPositiveButton(R.string.post_save) { _, _ ->
+                val content = dialogBinding.content.text.toString()
+                if (content.isNotBlank()) {
+                    viewModel.edit(post.copy(content = content))
+                    viewModel.save()
+                }
+            }
+            .setNegativeButton(R.string.post_cancel_button) { dialog, _ ->
+                viewModel.cancelEditing()
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
+
+        // Обработчики для кнопок внутри диалога
+        dialogBinding.save.setOnClickListener {
+            val content = dialogBinding.content.text.toString()
+            if (content.isNotBlank()) {
+                viewModel.edit(post.copy(content = content))
+                viewModel.save()
+                dialog.dismiss()
+            }
+        }
+
+        dialogBinding.cancel.setOnClickListener {
+            viewModel.cancelEditing()
+            dialog.dismiss()
+        }
+    }
+
+    private fun showDeleteDialog(post: Post) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.post_delete_title)
+            .setMessage(R.string.post_delete_message)
+            .setPositiveButton(R.string.post_delete_confirm) { _, _ ->
+                viewModel.removeById(post.id)
+                if (viewModel.edited.value?.id == post.id) {
+                    viewModel.cancelEditing()
+                }
+            }
+            .setNegativeButton(R.string.post_cancel_button, null)
+            .show()
+    }
+
+    private fun showMenuDialog(post: Post) {
+        val items = arrayOf(
+            getString(R.string.post_edit),
+            getString(R.string.post_delete)
+        )
+
+        AlertDialog.Builder(this)
+            .setTitle("Действия с постом")
+            .setItems(items) { _, which ->
+                when (which) {
+                    0 -> showEditDialog(post)
+                    1 -> showDeleteDialog(post)
+                }
+            }
+            .setNegativeButton(R.string.post_cancel_button, null)
+            .show()
     }
 }

@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.PostItemBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.NumberFormatter
@@ -17,6 +16,8 @@ class PostAdapter(
     interface OnInteractionListener {
         fun onLike(post: Post)
         fun onShare(post: Post)
+        fun onEdit(post: Post)
+        fun onRemove(post: Post)
         fun onMenu(post: Post)
     }
 
@@ -29,6 +30,8 @@ class PostAdapter(
                 author.text = post.author
                 published.text = post.published
                 content.text = post.content
+
+                // Устанавливаем аватар
                 avatar.setImageResource(post.avatar)
 
                 // Форматируем числа
@@ -38,9 +41,9 @@ class PostAdapter(
 
                 // Устанавливаем иконку лайка
                 val likeIcon = if (post.likedByMe) {
-                    R.drawable.ic_liked_24
+                    android.R.drawable.btn_star_big_on
                 } else {
-                    R.drawable.ic_like_24
+                    android.R.drawable.btn_star_big_off
                 }
                 likeButton.setImageResource(likeIcon)
 
@@ -53,13 +56,16 @@ class PostAdapter(
                     onInteractionListener.onShare(post)
                 }
 
-                menu.setOnClickListener {
-                    onInteractionListener.onMenu(post)
+                editButton.setOnClickListener {
+                    onInteractionListener.onEdit(post)
                 }
 
-                // Для тестирования Parent Child (можно удалить)
-                root.setOnClickListener {
-                    // Обработчик на корневом элементе
+                deleteButton.setOnClickListener {
+                    onInteractionListener.onRemove(post)
+                }
+
+                menu.setOnClickListener {
+                    onInteractionListener.onMenu(post)
                 }
             }
         }

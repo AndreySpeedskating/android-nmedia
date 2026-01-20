@@ -7,8 +7,7 @@ import ru.netology.nmedia.dto.Post
 
 class PostRepositoryInMemoryImpl : PostRepository {
     private var nextId = 1L
-
-    private var posts = listOf(
+    private var posts = mutableListOf(
         Post(
             id = nextId++,
             author = "Кто то здесь",
@@ -48,10 +47,11 @@ class PostRepositoryInMemoryImpl : PostRepository {
     )
 
     private val _data = MutableStateFlow(posts)
-
     override val data: Flow<List<Post>> = _data
 
     override fun getAll(): List<Post> = posts
+
+    fun getById(id: Long): Post? = posts.find { it.id == id }
 
     override fun likeById(id: Long) {
         posts = posts.map { post ->
@@ -63,7 +63,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
             } else {
                 post
             }
-        }
+        }.toMutableList()
         _data.value = posts
     }
 
@@ -74,21 +74,23 @@ class PostRepositoryInMemoryImpl : PostRepository {
             } else {
                 post
             }
-        }
+        }.toMutableList()
         _data.value = posts
     }
 
     override fun save(post: Post) {
-        posts = if (post.id == 0L) {
-            listOf(post.copy(id = nextId++)) + posts
+        if (post.id == 0L) {
+            // Создание нового поста
+            posts = (listOf(post.copy(id = nextId++)) + posts).toMutableList()
         } else {
-            posts.map { if (it.id == post.id) post else it }
+            // Обновление существующего
+            posts = posts.map { if (it.id == post.id) post else it }.toMutableList()
         }
         _data.value = posts
     }
 
     override fun removeById(id: Long) {
-        posts = posts.filter { it.id != id }
+        posts = posts.filter { it.id != id }.toMutableList()
         _data.value = posts
     }
 }
