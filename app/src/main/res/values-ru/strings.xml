@@ -4,4 +4,17 @@
     <string name="hello">Привет, Мир!</string>
     <string name="description_post_author_avatar">Аватар автора поста</string>
     <string name="description_post_menu">Меню поста</string>
+    <string name="post_content_hint">Что у вас нового?</string>
+    <string name="post_save">Сохранить</string>
+    <string name="post_cancel">Отмена</string>
+    <string name="post_edit">Редактировать</string>
+    <string name="post_delete">Удалить</string>
+
+    <string name="post_add">Добавить пост</string>
+    <string name="post_cancel_button">Отмена</string>
+    <string name="post_delete_confirm">Удалить</string>
+    <string name="post_delete_message">Вы уверены, что хотите удалить этот пост?</string>
+    <string name="post_delete_title">Удаление поста</string>
+    <string name="post_edit_title">Редактировать пост</string>
+    <string name="post_new_title">Новый пост</string>
 </resources>

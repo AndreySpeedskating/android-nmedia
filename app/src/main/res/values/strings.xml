@@ -3,4 +3,17 @@
     <string name="hello">Hello World!</string>
     <string name="description_post_author_avatar">Post author avatar</string>
     <string name="description_post_menu">Post menu</string>
+
+    <string name="post_content_hint">What\'s new?</string>
+    <string name="post_save">Save</string>
+    <string name="post_cancel">Cancel</string>
+    <string name="post_edit">Edit</string>
+    <string name="post_delete">Delete</string>
+    <string name="post_add">Add post</string>
+    <string name="post_cancel_button">Cancel</string>
+    <string name="post_delete_confirm">Delete</string>
+    <string name="post_delete_message">Are you sure you want to delete this post?</string>
+    <string name="post_delete_title">Delete post</string>
+    <string name="post_edit_title">Edit post</string>
+    <string name="post_new_title">New post</string>
 </resources>
