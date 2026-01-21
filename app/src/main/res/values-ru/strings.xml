@@ -9,6 +9,9 @@
     <string name="post_cancel">Отмена</string>
     <string name="post_edit">Редактировать</string>
     <string name="post_delete">Удалить</string>
+    <string name="post_like">Лайк</string>
+    <string name="post_share">Поделиться</string>
+    <string name="post_views">Просмотры</string>
 
     <string name="post_add">Добавить пост</string>
     <string name="post_cancel_button">Отмена</string>
