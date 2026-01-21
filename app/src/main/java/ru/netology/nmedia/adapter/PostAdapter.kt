@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.PostItemBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.NumberFormatter
@@ -41,9 +42,9 @@ class PostAdapter(
 
                 // Устанавливаем иконку лайка
                 val likeIcon = if (post.likedByMe) {
-                    android.R.drawable.btn_star_big_on
+                    R.drawable.ic_liked_24
                 } else {
-                    android.R.drawable.btn_star_big_off
+                    R.drawable.ic_like_24
                 }
                 likeButton.setImageResource(likeIcon)
 

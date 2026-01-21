@@ -5,11 +5,11 @@ data class Post(
     val author: String,
     val content: String,
     val published: String,
-    val avatar: Int,
-    var likedByMe: Boolean = false,
-    var likesCount: Int = 0,
-    var sharesCount: Int = 0,
-    var viewsCount: Int = 0
+    val avatar: Int = android.R.drawable.sym_def_app_icon,
+    val likedByMe: Boolean = false,
+    val likesCount: Int = 0,
+    val sharesCount: Int = 0,
+    val viewsCount: Int = 0
 ) {
     companion object {
         val empty = Post(
@@ -19,5 +19,21 @@ data class Post(
             published = "",
             avatar = android.R.drawable.sym_def_app_icon
         )
+    }
+
+    // Методы для создания копий с измененными значениями
+    fun copyWithLike(newLikedByMe: Boolean, newLikesCount: Int): Post {
+        return this.copy(
+            likedByMe = newLikedByMe,
+            likesCount = newLikesCount
+        )
+    }
+
+    fun copyWithShare(newSharesCount: Int): Post {
+        return this.copy(sharesCount = newSharesCount)
+    }
+
+    fun copyWithContent(newContent: String): Post {
+        return this.copy(content = newContent)
     }
 }

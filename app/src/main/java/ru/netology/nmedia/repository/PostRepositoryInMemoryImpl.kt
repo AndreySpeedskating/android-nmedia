@@ -51,15 +51,12 @@ class PostRepositoryInMemoryImpl : PostRepository {
 
     override fun getAll(): List<Post> = posts
 
-    fun getById(id: Long): Post? = posts.find { it.id == id }
-
     override fun likeById(id: Long) {
         posts = posts.map { post ->
             if (post.id == id) {
-                post.copy(
-                    likedByMe = !post.likedByMe,
-                    likesCount = if (!post.likedByMe) post.likesCount + 1 else post.likesCount - 1
-                )
+                val newLikedByMe = !post.likedByMe
+                val newLikesCount = if (newLikedByMe) post.likesCount + 1 else post.likesCount - 1
+                post.copyWithLike(newLikedByMe, newLikesCount)
             } else {
                 post
             }
@@ -70,7 +67,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override fun shareById(id: Long) {
         posts = posts.map { post ->
             if (post.id == id) {
-                post.copy(sharesCount = post.sharesCount + 1)
+                post.copyWithShare(post.sharesCount + 1)
             } else {
                 post
             }
@@ -79,13 +76,20 @@ class PostRepositoryInMemoryImpl : PostRepository {
     }
 
     override fun save(post: Post) {
+
         if (post.id == 0L) {
-            // Создание нового поста
             posts = (listOf(post.copy(id = nextId++)) + posts).toMutableList()
+
         } else {
-            // Обновление существующего
-            posts = posts.map { if (it.id == post.id) post else it }.toMutableList()
+            val index = posts.indexOfFirst { it.id == post.id }
+
+            if (index != -1) {
+                posts = posts.map { if (it.id == post.id) post else it }.toMutableList()
+            } else {
+                return
+            }
         }
+
         _data.value = posts
     }
 

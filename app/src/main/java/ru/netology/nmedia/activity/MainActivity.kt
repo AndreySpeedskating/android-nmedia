@@ -63,6 +63,8 @@ class MainActivity : AppCompatActivity() {
 
         // Подписка на данные
         viewModel.data.observe(this) { posts ->
+            println("📱 ACTIVITY: data changed! Posts count: ${posts.size}")
+            println("📱 First post content: '${posts.firstOrNull()?.content?.take(30)}...'")
             adapter.submitList(posts)
         }
 
@@ -89,7 +91,11 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(R.string.post_save) { _, _ ->
                 val content = dialogBinding.content.text.toString()
                 if (content.isNotBlank()) {
-                    viewModel.edit(post.copy(content = content))
+                    // 1. Создаем обновленную копию поста
+                    val updatedPost = post.copyWithContent(content)
+                    // 2. Передаем в ViewModel
+                    viewModel.edit(updatedPost)
+                    // 3. Сохраняем
                     viewModel.save()
                 }
             }
@@ -101,11 +107,11 @@ class MainActivity : AppCompatActivity() {
 
         dialog.show()
 
-        // Обработчики для кнопок внутри диалога
         dialogBinding.save.setOnClickListener {
             val content = dialogBinding.content.text.toString()
             if (content.isNotBlank()) {
-                viewModel.edit(post.copy(content = content))
+                val updatedPost = post.copyWithContent(content)
+                viewModel.edit(updatedPost)
                 viewModel.save()
                 dialog.dismiss()
             }
@@ -138,7 +144,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         AlertDialog.Builder(this)
-            .setTitle("Действия с постом")
+            .setTitle(R.string.post_menu_title)
             .setItems(items) { _, which ->
                 when (which) {
                     0 -> showEditDialog(post)
