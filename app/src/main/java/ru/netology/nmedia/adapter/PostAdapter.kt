@@ -36,9 +36,9 @@ class PostAdapter(
                 avatar.setImageResource(post.avatar)
 
                 // Форматируем числа
-                likeCount.text = NumberFormatter.formatCompact(post.likesCount)
-                shareCount.text = NumberFormatter.formatCompact(post.sharesCount)
-                viewsCount.text = NumberFormatter.formatCompact(post.viewsCount)
+                likeButton.text = NumberFormatter.formatCompact(post.likesCount)
+                shareButton.text = NumberFormatter.formatCompact(post.sharesCount)
+                viewsButton.text = NumberFormatter.formatCompact(post.viewsCount)
 
                 // Устанавливаем иконку лайка
                 val likeIcon = if (post.likedByMe) {
@@ -46,7 +46,7 @@ class PostAdapter(
                 } else {
                     R.drawable.ic_like_24
                 }
-                likeButton.setImageResource(likeIcon)
+                likeButton.setIconResource(likeIcon)
 
                 // Обработчики событий
                 likeButton.setOnClickListener {

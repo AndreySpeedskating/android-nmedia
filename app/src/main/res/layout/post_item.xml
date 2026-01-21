@@ -47,16 +47,17 @@
         app:layout_constraintStart_toEndOf="@id/avatar"
         tools:text="@sample/posts.json/data/published" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/menu"
-        android:layout_width="wrap_content"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/common_spacing"
-        android:background="@android:color/transparent"
         android:contentDescription="@string/description_post_menu"
+        app:icon="@drawable/ic_more_vert_24"
+        app:iconSize="24dp"
+        app:iconTint="@color/material_on_surface_emphasis_medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_more_vert_24" />
+        app:layout_constraintTop_toTopOf="@id/avatar" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
@@ -76,71 +77,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier"
         tools:text="@sample/posts.json/data/content" />
-    <ImageButton
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/likeButton"
+        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/ic_liked_24"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/post_like"
+        android:text="0"
+        android:textSize="14sp"
+        app:icon="@drawable/ic_like_24"
+        app:iconGravity="textStart"
+        app:iconSize="20dp"
+        app:iconPadding="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/content" />
 
-    <TextView
-        android:id="@+id/likeCount"
-        android:layout_width="31dp"
-        android:layout_height="37dp"
-        android:gravity="center_vertical"
-        android:text="125"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/likeButton"
-        app:layout_constraintStart_toEndOf="@id/likeButton"
-        app:layout_constraintTop_toTopOf="@id/likeButton" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/shareButton"
+        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@android:drawable/ic_menu_share"
-        app:layout_constraintStart_toEndOf="@id/likeCount"
-        app:layout_constraintTop_toTopOf="@id/likeButton"
-        app:layout_constraintBottom_toBottomOf="@id/likeButton" />
-
-    <TextView
-        android:id="@+id/shareCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="5"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/post_share"
+        android:text="0"
         android:textSize="14sp"
-        android:gravity="center_vertical"
-        app:layout_constraintStart_toEndOf="@id/shareButton"
-        app:layout_constraintTop_toTopOf="@id/likeButton"
-        app:layout_constraintBottom_toBottomOf="@id/likeButton" />
+        app:icon="@drawable/ic_share_24"
+        app:iconGravity="textStart"
+        app:iconSize="20dp"
+        app:iconPadding="4dp"
+        app:layout_constraintStart_toEndOf="@id/likeButton"
+        app:layout_constraintTop_toBottomOf="@id/content" />
 
-    <ImageView
-        android:id="@+id/viewsIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:src="@android:drawable/ic_menu_view"
-        app:layout_constraintEnd_toStartOf="@id/viewsCount"
-        app:layout_constraintTop_toTopOf="@id/likeButton"
-        app:layout_constraintBottom_toBottomOf="@id/likeButton" />
 
-    <TextView
-        android:id="@+id/viewsCount"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/viewsButton"
+        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="1.5K"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/post_views"
+        android:text="0"
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray"
-        android:gravity="center_vertical"
+        app:icon="@drawable/ic_visibility_24"
+        app:iconGravity="textStart"
+        app:iconSize="20dp"
+        app:iconPadding="4dp"
+        app:iconTint="@color/material_on_surface_emphasis_medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/likeButton"
-        app:layout_constraintBottom_toBottomOf="@id/likeButton" />
+        app:layout_constraintTop_toBottomOf="@id/content" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/editButtons"
@@ -149,27 +139,29 @@
         android:visibility="gone"
         app:constraint_referenced_ids="editButton,deleteButton" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/editButton"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/post_edit"
-        android:src="@android:drawable/ic_menu_edit"
+        app:icon="@drawable/ic_edit_24"
+        app:iconSize="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/viewsCount" />
+        app:layout_constraintTop_toBottomOf="@id/likeButton" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/deleteButton"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/post_delete"
-        android:src="@android:drawable/ic_menu_delete"
+        app:icon="@drawable/ic_delete_24"
+        app:iconSize="24dp"
         app:layout_constraintStart_toEndOf="@id/editButton"
-        app:layout_constraintTop_toBottomOf="@id/viewsCount" />
+        app:layout_constraintTop_toBottomOf="@id/likeButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

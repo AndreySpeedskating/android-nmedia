@@ -17,4 +17,7 @@
     <string name="post_edit_title">Edit post</string>
     <string name="post_new_title">New post</string>
     <string name="post_menu_title">Post actions</string>
+    <string name="post_like">Like</string>
+    <string name="post_share">Share</string>
+    <string name="post_views">Views</string>
 </resources>
