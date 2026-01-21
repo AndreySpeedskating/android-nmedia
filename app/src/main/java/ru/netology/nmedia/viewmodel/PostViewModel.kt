@@ -7,22 +7,21 @@ import androidx.lifecycle.asLiveData
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryInMemoryImpl
-import ru.netology.nmedia.utils.NumberFormatter
 
 class PostViewModel : ViewModel() {
     private val repository: PostRepository = PostRepositoryInMemoryImpl()
 
     val data: LiveData<List<Post>> = repository.data.asLiveData()
 
-    // LiveData для редактируемого поста
     private val _edited = MutableLiveData<Post?>(null)
     val edited: LiveData<Post?> = _edited
 
     fun likeById(id: Long) = repository.likeById(id)
     fun shareById(id: Long) = repository.shareById(id)
 
-    // Методы для редактирования
     fun save() {
+        println("📱 VIEWMODEL save() called")
+        println("📱 _edited.value: ${_edited.value}")
         _edited.value?.let {
             repository.save(it)
             _edited.value = null

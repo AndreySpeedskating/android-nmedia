@@ -16,4 +16,5 @@
     <string name="post_delete_title">Delete post</string>
     <string name="post_edit_title">Edit post</string>
     <string name="post_new_title">New post</string>
+    <string name="post_menu_title">Post actions</string>
 </resources>

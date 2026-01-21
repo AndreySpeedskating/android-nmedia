@@ -17,4 +17,5 @@
     <string name="post_delete_title">Удаление поста</string>
     <string name="post_edit_title">Редактировать пост</string>
     <string name="post_new_title">Новый пост</string>
+    <string name="post_menu_title">Действия с постом</string>
 </resources>
