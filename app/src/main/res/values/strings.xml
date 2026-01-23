@@ -20,4 +20,13 @@
     <string name="post_like">Like</string>
     <string name="post_share">Share</string>
     <string name="post_views">Views</string>
+    <string name="new_post">New Post</string>
+    <string name="edit_post">Edit Post</string>
+    <string name="content_hint">Enter text...</string>
+    <string name="video_url_hint">Video link (RUTUBE)</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_empty_content">Empty content</string>
+    <string name="video_preview">Video</string>
+    <string name="play">Play</string>
 </resources>

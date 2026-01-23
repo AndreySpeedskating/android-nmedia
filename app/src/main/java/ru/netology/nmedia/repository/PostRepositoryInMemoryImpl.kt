@@ -10,19 +10,20 @@ class PostRepositoryInMemoryImpl : PostRepository {
     private var posts = mutableListOf(
         Post(
             id = nextId++,
-            author = "Кто то здесь",
-            content = "Инсайдер, известный под ником Debayan Roy, раскрывает дополнительные подробности. По его данным, Realme P4 Power базируется на однокристальной платформе Dimensity 7400, получит экран OLED с диагональю 6,78 дюйма, разрешением 1,5К и кадровой частотой 144 Гц.  В блоке основной камеры пропишутся датчики с разрешением 50, 8 и 2 Мп, разрешение фронтальной камеры составит 16 Мп. Боковая рамка будет пластиковой. Максимальная мощность зарядки составит 80 Вт, масса — 218 граммов. В устройстве будет реализована защита от пыли и воды в соответствии со степенью IP69. Также называется ориентировочная цена — менее 25 тыс. рупий (275 долларов).",
+            author = "Нетология",
+            content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов.",
             published = "23 мая в 18:36",
             likedByMe = true,
             likesCount = 125,
             sharesCount = 5,
             viewsCount = 1500,
-            avatar = R.drawable.netology_avatar
+            avatar = R.drawable.netology_avatar,
+            video = "https://rutube.ru/video/6550a91e7e523f9503bed47e4c46d0cb"
         ),
         Post(
             id = nextId++,
-            author = "Кто то там",
-            content = "Задняя крышка смартфона получила двухфактурную отделку: матовый низ сочетается с полупрозрачным верхом. На выбор предложат три цвета: серебристый, оранжевый и синий. Официально сообщается, что устройство будет получать обновления безопасности в течение четырех лет и получит три больших обновления Android.",
+            author = "Иван Иванов",
+            content = "Задняя крышка смартфона получила двухфактурную отделку: матовый низ сочетается с полупрозрачным верхом. На выбор предложат три цвета: серебристый, оранжевый и синий.",
             published = "23 мая в 19:00",
             likedByMe = false,
             likesCount = 999,
@@ -32,17 +33,15 @@ class PostRepositoryInMemoryImpl : PostRepository {
         ),
         Post(
             id = nextId++,
-            author = "Кто то тут",
-            content = "Компания Nvidia недавно заявила, что массовое производство ускорителей для ИИ поколения Vera Rubin стартует уже в первом квартале, то есть с опережением сроков. Теперь стало известно, что клиенты получат свои стойки в августе. \n" +
-                    "\n" +
-                    "Об этом рассказал вице-президент компании Quanta. Вероятно, в августе свои стойки получат далеко не все, но, так или иначе, это дата старта поставок. В случае основных клиентов Nvidia такой запуск обеспечит полную интеграцию уже в четвёртому кварталу этого года. \n" +
-                    "\n",
+            author = "Петр Петров",
+            content = "Компания Nvidia недавно заявила, что массовое производство ускорителей для ИИ поколения Vera Rubin стартует уже в первом квартале, то есть с опережением сроков.",
             published = "23 мая в 19:15",
             likedByMe = false,
             likesCount = 999,
             sharesCount = 999,
             viewsCount = 1300000,
-            avatar = R.drawable.netology_avatar
+            avatar = R.drawable.netology_avatar,
+            video = "https://rutube.ru/video/private/0dc6cfcd8b2c38af84a9b5b7f0fa7b4b/?p=WJSCSTVrCahdGZxVH-NjJg"
         )
     )
 
@@ -78,23 +77,40 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override fun save(post: Post) {
 
         if (post.id == 0L) {
-            posts = (listOf(post.copy(id = nextId++)) + posts).toMutableList()
-
+            // Создание нового поста
+            val newPost = post.copy(id = nextId++)
+            posts = (listOf(newPost) + posts).toMutableList()
         } else {
+            // Редактирование существующего поста
             val index = posts.indexOfFirst { it.id == post.id }
-
             if (index != -1) {
-                posts = posts.map { if (it.id == post.id) post else it }.toMutableList()
+                posts = posts.toMutableList().apply {
+                    this[index] = post
+                }
             } else {
-                return
+                println("POST NOT FOUND for id=${post.id}")
             }
         }
-
         _data.value = posts
     }
+
+    override fun update(post: Post) {
+        val index = posts.indexOfFirst { it.id == post.id }
+        if (index != -1) {
+            posts = posts.toMutableList().apply {
+                this[index] = post
+            }
+            _data.value = posts
+        }
+    }
+
 
     override fun removeById(id: Long) {
         posts = posts.filter { it.id != id }.toMutableList()
         _data.value = posts
+    }
+
+    override fun getById(id: Long): Post? {
+        return posts.find { it.id == id }
     }
 }
