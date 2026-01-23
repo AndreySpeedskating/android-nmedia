@@ -42,39 +42,27 @@ class PostAdapter(
                 shareButton.text = NumberFormatter.formatCompact(post.sharesCount)
                 viewsButton.text = NumberFormatter.formatCompact(post.viewsCount)
 
-                // Устанавливаем иконку лайка
-                val likeIcon = if (post.likedByMe) {
-                    R.drawable.ic_liked_24
+                // Устанавливаем иконку лайка и цвет
+                if (post.likedByMe) {
+                    likeButton.setIconResource(R.drawable.ic_liked_24)
+                    likeButton.iconTint = likeButton.context.getColorStateList(R.color.red)
                 } else {
-                    R.drawable.ic_like_24
+                    likeButton.setIconResource(R.drawable.ic_like_24)
+                    likeButton.iconTint = likeButton.context.getColorStateList(R.color.material_on_surface_emphasis_medium)
                 }
-                likeButton.setIconResource(likeIcon)
-
-                // Настройка цвета иконки лайка
-                val likeIconTint = if (post.likedByMe) {
-                    R.color.red
-                } else {
-                    R.color.material_on_surface_emphasis_medium
-                }
-                likeButton.iconTint = likeButton.context.getColorStateList(likeIconTint)
 
                 // Обработка видео
                 if (!post.video.isNullOrBlank()) {
                     videoContainer.visibility = View.VISIBLE
-                    // Обработчик клика на весь видео блок
                     videoContainer.setOnClickListener {
                         onInteractionListener.onVideoClick(post)
                     }
-                    // Обработчик клика на кнопку play
                     playButton.setOnClickListener {
                         onInteractionListener.onVideoClick(post)
                     }
-                    // Обработчик клика на превью
                     videoPreview.setOnClickListener {
                         onInteractionListener.onVideoClick(post)
                     }
-
-                    // Обновляем constraints для likeButton
                     likeButton.constraintParams.topToBottom = videoContainer.id
                 } else {
                     videoContainer.visibility = View.GONE
@@ -90,11 +78,10 @@ class PostAdapter(
                     onInteractionListener.onShare(post)
                 }
 
+                // Меню с тремя точками
                 menu.setOnClickListener { view ->
                     PopupMenu(view.context, view).apply {
-                        // Используйте правильное имя файла
                         menuInflater.inflate(R.menu.post_actions, this.menu)
-
                         setOnMenuItemClickListener { menuItem ->
                             when (menuItem.itemId) {
                                 R.id.edit -> {
@@ -113,6 +100,7 @@ class PostAdapter(
                 }
             }
         }
+
         private val android.view.View.constraintParams: androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
             get() = layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
     }
@@ -138,10 +126,10 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
 
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.content == newItem.content &&
-                oldItem?.likedByMe == newItem?.likedByMe &&
-                oldItem?.likesCount == newItem?.likesCount &&
-                oldItem?.sharesCount == newItem?.sharesCount &&
-                oldItem?.viewsCount == newItem?.viewsCount &&
-                oldItem?.video == newItem?.video
+                oldItem.video == newItem.video &&
+                oldItem.likedByMe == newItem.likedByMe &&
+                oldItem.likesCount == newItem.likesCount &&
+                oldItem.sharesCount == newItem.sharesCount &&
+                oldItem.viewsCount == newItem.viewsCount
     }
 }
