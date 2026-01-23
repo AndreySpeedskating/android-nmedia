@@ -12,6 +12,15 @@
     <string name="post_like">Лайк</string>
     <string name="post_share">Поделиться</string>
     <string name="post_views">Просмотры</string>
+    <string name="new_post">Новый пост</string>
+    <string name="edit_post">Редактировать пост</string>
+    <string name="content_hint">Введите текст поста...</string>
+    <string name="video_url_hint">Ссылка на видео (RUTUBE)</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="error_empty_content">Текст поста не может быть пустым</string>
+    <string name="video_preview">Видео</string>
+    <string name="play">Воспроизвести</string>
 
     <string name="post_add">Добавить пост</string>
     <string name="post_cancel_button">Отмена</string>

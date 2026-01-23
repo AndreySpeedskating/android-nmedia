@@ -9,6 +9,9 @@ interface PostRepository {
     fun shareById(id: Long)
     fun save(post: Post)
     fun removeById(id: Long)
+    fun update(post: Post)
+
+    fun getById(id: Long): Post?
 
     val data: Flow<List<Post>>
 }

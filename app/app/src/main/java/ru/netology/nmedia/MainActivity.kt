@@ -24,7 +24,3 @@ class MainActivity : AppCompatActivity() {
 
     }
 }
-
-
-//        println(R.string.hello) // число
-//        println(getString(R.string.hello)) // "Привет, Мир!" или "Hello World!"

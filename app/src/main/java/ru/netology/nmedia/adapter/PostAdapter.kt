@@ -1,7 +1,9 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +21,7 @@ class PostAdapter(
         fun onShare(post: Post)
         fun onEdit(post: Post)
         fun onRemove(post: Post)
-        fun onMenu(post: Post)
+        fun onVideoClick(post: Post)
     }
 
     inner class PostViewHolder(
@@ -48,6 +50,37 @@ class PostAdapter(
                 }
                 likeButton.setIconResource(likeIcon)
 
+                // Настройка цвета иконки лайка
+                val likeIconTint = if (post.likedByMe) {
+                    R.color.red
+                } else {
+                    R.color.material_on_surface_emphasis_medium
+                }
+                likeButton.iconTint = likeButton.context.getColorStateList(likeIconTint)
+
+                // Обработка видео
+                if (!post.video.isNullOrBlank()) {
+                    videoContainer.visibility = View.VISIBLE
+                    // Обработчик клика на весь видео блок
+                    videoContainer.setOnClickListener {
+                        onInteractionListener.onVideoClick(post)
+                    }
+                    // Обработчик клика на кнопку play
+                    playButton.setOnClickListener {
+                        onInteractionListener.onVideoClick(post)
+                    }
+                    // Обработчик клика на превью
+                    videoPreview.setOnClickListener {
+                        onInteractionListener.onVideoClick(post)
+                    }
+
+                    // Обновляем constraints для likeButton
+                    likeButton.constraintParams.topToBottom = videoContainer.id
+                } else {
+                    videoContainer.visibility = View.GONE
+                    likeButton.constraintParams.topToBottom = content.id
+                }
+
                 // Обработчики событий
                 likeButton.setOnClickListener {
                     onInteractionListener.onLike(post)
@@ -57,19 +90,31 @@ class PostAdapter(
                     onInteractionListener.onShare(post)
                 }
 
-                editButton.setOnClickListener {
-                    onInteractionListener.onEdit(post)
-                }
+                menu.setOnClickListener { view ->
+                    PopupMenu(view.context, view).apply {
+                        // Используйте правильное имя файла
+                        menuInflater.inflate(R.menu.post_actions, this.menu)
 
-                deleteButton.setOnClickListener {
-                    onInteractionListener.onRemove(post)
-                }
-
-                menu.setOnClickListener {
-                    onInteractionListener.onMenu(post)
+                        setOnMenuItemClickListener { menuItem ->
+                            when (menuItem.itemId) {
+                                R.id.edit -> {
+                                    onInteractionListener.onEdit(post)
+                                    true
+                                }
+                                R.id.delete -> {
+                                    onInteractionListener.onRemove(post)
+                                    true
+                                }
+                                else -> false
+                            }
+                        }
+                        show()
+                    }
                 }
             }
         }
+        private val android.view.View.constraintParams: androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+            get() = layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -92,6 +137,11 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     }
 
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem == newItem
+        return oldItem.content == newItem.content &&
+                oldItem?.likedByMe == newItem?.likedByMe &&
+                oldItem?.likesCount == newItem?.likesCount &&
+                oldItem?.sharesCount == newItem?.sharesCount &&
+                oldItem?.viewsCount == newItem?.viewsCount &&
+                oldItem?.video == newItem?.video
     }
 }
