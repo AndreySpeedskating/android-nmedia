@@ -138,10 +138,10 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
 
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.content == newItem.content &&
-                oldItem?.likedByMe === newItem?.likedByMe &&
-                oldItem?.likesCount === newItem?.likesCount &&
-                oldItem?.sharesCount === newItem?.sharesCount &&
-                oldItem?.viewsCount === newItem?.viewsCount &&
-                oldItem?.video === newItem?.video
+                oldItem?.likedByMe == newItem?.likedByMe &&
+                oldItem?.likesCount == newItem?.likesCount &&
+                oldItem?.sharesCount == newItem?.sharesCount &&
+                oldItem?.viewsCount == newItem?.viewsCount &&
+                oldItem?.video == newItem?.video
     }
 }
