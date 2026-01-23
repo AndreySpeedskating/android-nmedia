@@ -1,4 +1,4 @@
-package ru.netology.nmedia.activity
+package ru.netology.nmedia
 
 import android.app.Application
 import ru.netology.nmedia.repository.PostRepository

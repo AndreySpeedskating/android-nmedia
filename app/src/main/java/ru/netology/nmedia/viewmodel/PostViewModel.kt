@@ -3,7 +3,7 @@ package ru.netology.nmedia.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import ru.netology.nmedia.activity.NMediaApplication
+import ru.netology.nmedia.NMediaApplication
 import ru.netology.nmedia.dto.Post
 
 class PostViewModel : ViewModel() {
