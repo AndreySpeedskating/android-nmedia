@@ -1,5 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">НМедиа</string>
     <string name="hello">Привет, Мир!</string>
-    <string name="welcome_message">Добро пожаловать в наше приложение</string>
+    <string name="description_post_author_avatar">Аватар автора поста</string>
+    <string name="description_post_menu">Меню поста</string>
+    <string name="post_content_hint">Что у вас нового?</string>
+    <string name="post_save">Сохранить</string>
+    <string name="post_cancel">Отмена</string>
+    <string name="post_edit">Редактировать</string>
+    <string name="post_delete">Удалить</string>
+    <string name="post_like">Лайк</string>
+    <string name="post_share">Поделиться</string>
+    <string name="post_views">Просмотры</string>
+    <string name="new_post">Новый пост</string>
+    <string name="edit_post">Редактировать пост</string>
+    <string name="content_hint">Введите текст поста...</string>
+    <string name="video_url_hint">Ссылка на видео (RUTUBE)</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="error_empty_content">Текст поста не может быть пустым</string>
+    <string name="video_preview">Видео</string>
+    <string name="play">Воспроизвести</string>
+
+    <string name="post_add">Добавить пост</string>
+    <string name="post_cancel_button">Отмена</string>
+    <string name="post_delete_confirm">Удалить</string>
+    <string name="post_delete_message">Вы уверены, что хотите удалить этот пост?</string>
+    <string name="post_delete_title">Удаление поста</string>
+    <string name="post_edit_title">Редактировать пост</string>
+    <string name="post_new_title">Новый пост</string>
+    <string name="post_menu_title">Действия с постом</string>
 </resources>
