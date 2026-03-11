@@ -1,10 +1,28 @@
 package ru.netology.nmedia.api
 
 import retrofit2.Response
-import retrofit2.http.GET
+import retrofit2.http.*
 import ru.netology.nmedia.dto.Post
 
 interface PostsApiService {
     @GET("posts")
     suspend fun getAllPosts(): Response<List<Post>>
+
+    @POST("posts/{id}/likes")
+    suspend fun likeById(@Path("id") id: Long): Response<Post>
+
+    @DELETE("posts/{id}/likes")
+    suspend fun dislikeById(@Path("id") id: Long): Response<Post>
+
+    @POST("posts")
+    suspend fun savePost(@Body post: Post): Response<Post>
+
+    @PUT("posts/{id}")
+    suspend fun updatePost(@Path("id") id: Long, @Body post: Post): Response<Post>
+
+    @DELETE("posts/{id}")
+    suspend fun removeById(@Path("id") id: Long): Response<Unit>
+
+    @GET("posts/{id}")
+    suspend fun getPostById(@Path("id") id: Long): Response<Post>
 }

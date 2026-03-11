@@ -2,7 +2,7 @@ package ru.netology.nmedia
 
 import android.app.Application
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostRepositoryInMemoryImpl
+import ru.netology.nmedia.repository.PostRepositoryImpl
 
 class NMediaApplication : Application() {
     companion object {
@@ -12,6 +12,6 @@ class NMediaApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        repository = PostRepositoryInMemoryImpl()
+        repository = PostRepositoryImpl()
     }
 }

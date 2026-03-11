@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
@@ -47,8 +48,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onEdit(post: Post) {
-                // Передаем только ID поста
-                newPostLauncher.launch(post?.id)
+                newPostLauncher.launch(post.id)
             }
 
             override fun onRemove(post: Post) {
@@ -66,13 +66,19 @@ class MainActivity : AppCompatActivity() {
         binding.postsList.layoutManager = LinearLayoutManager(this)
         binding.postsList.adapter = adapter
 
+        // Настройка SwipeRefreshLayout
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadPosts()
+        }
+
         binding.fab.setOnClickListener {
-            // Для нового поста передаем null
             newPostLauncher.launch(null)
         }
 
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
+            // Скрываем индикатор обновления, если он активен
+            binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 }

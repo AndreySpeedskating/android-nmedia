@@ -36,7 +36,7 @@ class PostAdapter(
                 published.text = post.published
                 content.text = post.content
 
-                // Загрузка аватара с сервера с помощью Glide (Задача №1)
+                // Загрузка аватара с сервера
                 val avatarUrl = post.authorAvatar?.let {
                     "http://10.0.2.2:9999/avatars/$it"
                 }
@@ -45,7 +45,7 @@ class PostAdapter(
                     .load(avatarUrl)
                     .placeholder(R.drawable.netology_avatar)
                     .error(R.drawable.netology_avatar)
-                    .transform(CircleCrop()) // Делаем аватар круглым (Задача №2)
+                    .transform(CircleCrop())
                     .into(avatar)
 
                 // Форматирование чисел
@@ -78,7 +78,7 @@ class PostAdapter(
                     videoContainer.visibility = View.GONE
                 }
 
-                // Обработка вложений (Задача №3)
+                // Обработка вложений
                 if (post.attachment != null && post.attachment.type.name == "IMAGE") {
                     attachmentContainer.visibility = View.VISIBLE
                     attachmentDescription.text = post.attachment.description ?: ""
