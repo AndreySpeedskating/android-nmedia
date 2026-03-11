@@ -7,10 +7,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.netology.nmedia.api.PostsApiService
 import ru.netology.nmedia.dto.Post
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class PostRepositoryImpl : PostRepository {
@@ -54,15 +56,22 @@ class PostRepositoryImpl : PostRepository {
                 }
             } else {
                 Log.e("PostRepository", "Error loading posts: ${response.code()}")
+                throw HttpException(response)
             }
+        } catch (e: IOException) {
+            Log.e("PostRepository", "Network error loading posts", e)
+            throw IOException("Нет подключения к интернету")
+        } catch (e: HttpException) {
+            Log.e("PostRepository", "HTTP error loading posts", e)
+            throw e
         } catch (e: Exception) {
             Log.e("PostRepository", "Exception loading posts", e)
+            throw Exception("Неизвестная ошибка: ${e.message}")
         }
     }
 
     override suspend fun likeById(id: Long) {
         try {
-            // Находим пост, чтобы узнать, лайкнут ли он сейчас
             val currentPost = posts.find { it.id == id }
 
             val response = if (currentPost?.likedByMe == true) {
@@ -81,15 +90,22 @@ class PostRepositoryImpl : PostRepository {
                 }
             } else {
                 Log.e("PostRepository", "Error liking post: ${response.code()}")
+                throw HttpException(response)
             }
+        } catch (e: IOException) {
+            Log.e("PostRepository", "Network error liking post", e)
+            throw IOException("Нет подключения к интернету")
+        } catch (e: HttpException) {
+            Log.e("PostRepository", "HTTP error liking post", e)
+            throw e
         } catch (e: Exception) {
             Log.e("PostRepository", "Exception liking post", e)
+            throw Exception("Неизвестная ошибка: ${e.message}")
         }
     }
 
     override suspend fun shareById(id: Long) {
         try {
-            // Для шаринга пока просто увеличиваем счетчик локально
             val index = posts.indexOfFirst { it.id == id }
             if (index != -1) {
                 val currentPost = posts[index]
@@ -98,46 +114,80 @@ class PostRepositoryImpl : PostRepository {
             }
         } catch (e: Exception) {
             Log.e("PostRepository", "Exception sharing post", e)
+            throw Exception("Ошибка при шеринге: ${e.message}")
         }
     }
 
     override suspend fun save(post: Post) {
         try {
-            // Для сохранения нового поста
             if (post.id == 0L) {
-                // Здесь должен быть POST запрос на сервер для создания нового поста
-                // Пока добавляем локально с временным ID
-                val newPost = post.copy(id = System.currentTimeMillis())
-                posts.add(0, newPost)
-                Log.d("PostRepository", "Saved new post with id: ${newPost.id}")
+                val response = api.savePost(post)
+                if (response.isSuccessful) {
+                    val newPost = response.body()
+                    if (newPost != null) {
+                        posts.add(0, newPost)
+                    }
+                } else {
+                    throw HttpException(response)
+                }
             } else {
-                // Обновление существующего поста
                 update(post)
             }
+        } catch (e: IOException) {
+            Log.e("PostRepository", "Network error saving post", e)
+            throw IOException("Нет подключения к интернету")
+        } catch (e: HttpException) {
+            Log.e("PostRepository", "HTTP error saving post", e)
+            throw e
         } catch (e: Exception) {
             Log.e("PostRepository", "Exception saving post", e)
+            throw Exception("Неизвестная ошибка: ${e.message}")
         }
     }
 
     override suspend fun removeById(id: Long) {
         try {
-            // Здесь должен быть DELETE запрос на сервер
-            posts.removeAll { it.id == id }
-            Log.d("PostRepository", "Removed post with id: $id")
+            val response = api.removeById(id)
+            if (response.isSuccessful) {
+                posts.removeAll { it.id == id }
+            } else {
+                throw HttpException(response)
+            }
+        } catch (e: IOException) {
+            Log.e("PostRepository", "Network error removing post", e)
+            throw IOException("Нет подключения к интернету")
+        } catch (e: HttpException) {
+            Log.e("PostRepository", "HTTP error removing post", e)
+            throw e
         } catch (e: Exception) {
             Log.e("PostRepository", "Exception removing post", e)
+            throw Exception("Неизвестная ошибка: ${e.message}")
         }
     }
 
     override suspend fun update(post: Post) {
         try {
-            val index = posts.indexOfFirst { it.id == post.id }
-            if (index != -1) {
-                posts[index] = post
-                Log.d("PostRepository", "Updated post with id: ${post.id}")
+            val response = api.updatePost(post.id, post)
+            if (response.isSuccessful) {
+                val updatedPost = response.body()
+                if (updatedPost != null) {
+                    val index = posts.indexOfFirst { it.id == post.id }
+                    if (index != -1) {
+                        posts[index] = updatedPost
+                    }
+                }
+            } else {
+                throw HttpException(response)
             }
+        } catch (e: IOException) {
+            Log.e("PostRepository", "Network error updating post", e)
+            throw IOException("Нет подключения к интернету")
+        } catch (e: HttpException) {
+            Log.e("PostRepository", "HTTP error updating post", e)
+            throw e
         } catch (e: Exception) {
             Log.e("PostRepository", "Exception updating post", e)
+            throw Exception("Неизвестная ошибка: ${e.message}")
         }
     }
 
