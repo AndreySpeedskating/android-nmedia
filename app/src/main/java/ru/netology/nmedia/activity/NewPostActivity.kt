@@ -107,11 +107,11 @@ class NewPostActivity : AppCompatActivity() {
                 published = "только что",
                 content = content,
                 likedByMe = false,
-                likesCount = 0,
-                sharesCount = 0,
-                viewsCount = 0,
+                likes = 0,
+                shares = 0,
+                views = 0,
                 video = if (videoUrl.isNotBlank()) videoUrl else null,
-                avatar = R.drawable.netology_avatar
+                authorAvatar = null
             )
             viewModel.save(newPost)
 

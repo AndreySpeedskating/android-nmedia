@@ -5,12 +5,13 @@ data class Post(
     val author: String,
     val content: String,
     val published: String,
-    val avatar: Int = android.R.drawable.sym_def_app_icon,
+    val authorAvatar: String? = null,
     val likedByMe: Boolean = false,
-    val likesCount: Int = 0,
-    val sharesCount: Int = 0,
-    val viewsCount: Int = 0,
-    val video: String? = null
+    val likes: Int = 0,
+    val shares: Int = 0,
+    val views: Int = 0,
+    val video: String? = null,
+    val attachment: Attachment? = null
 ) {
     companion object {
         val empty = Post(
@@ -18,7 +19,7 @@ data class Post(
             author = "",
             content = "",
             published = "",
-            avatar = android.R.drawable.sym_def_app_icon
+            authorAvatar = null
         )
     }
 
@@ -26,15 +27,25 @@ data class Post(
     fun copyWithLike(newLikedByMe: Boolean, newLikesCount: Int): Post {
         return this.copy(
             likedByMe = newLikedByMe,
-            likesCount = newLikesCount
+            likes = newLikesCount
         )
     }
 
     fun copyWithShare(newSharesCount: Int): Post {
-        return this.copy(sharesCount = newSharesCount)
+        return this.copy(shares = newSharesCount)
     }
 
     fun copyWithContent(newContent: String): Post {
         return this.copy(content = newContent)
     }
+}
+
+data class Attachment(
+    val url: String,
+    val description: String?,
+    val type: AttachmentType
+)
+
+enum class AttachmentType {
+    IMAGE
 }

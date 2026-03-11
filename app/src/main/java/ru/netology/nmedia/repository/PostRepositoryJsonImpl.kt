@@ -45,10 +45,10 @@ class PostRepositoryJsonImpl(private val context: Context) : PostRepository {
                 content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов.",
                 published = "23 мая в 18:36",
                 likedByMe = true,
-                likesCount = 125,
-                sharesCount = 5,
-                viewsCount = 1500,
-                avatar = R.drawable.netology_avatar,
+                likes = 125,
+                shares = 5,
+                views = 1500,
+                authorAvatar = R.drawable.netology_avatar.toString(),
                 video = "https://rutube.ru/video/6550a91e7e523f9503bed47e4c46d0cb"
             ),
             Post(
@@ -57,10 +57,10 @@ class PostRepositoryJsonImpl(private val context: Context) : PostRepository {
                 content = "Задняя крышка смартфона получила двухфактурную отделку: матовый низ сочетается с полупрозрачным верхом. На выбор предложат три цвета: серебристый, оранжевый и синий.",
                 published = "23 мая в 19:00",
                 likedByMe = false,
-                likesCount = 999,
-                sharesCount = 1200,
-                viewsCount = 25000,
-                avatar = R.drawable.netology_avatar
+                likes = 999,
+                shares = 1200,
+                views = 25000,
+                authorAvatar = R.drawable.netology_avatar.toString(),
             ),
             Post(
                 id = 3L,
@@ -68,10 +68,10 @@ class PostRepositoryJsonImpl(private val context: Context) : PostRepository {
                 content = "Компания Nvidia недавно заявила, что массовое производство ускорителей для ИИ поколения Vera Rubin стартует уже в первом квартале, то есть с опережением сроков.",
                 published = "23 мая в 19:15",
                 likedByMe = false,
-                likesCount = 999,
-                sharesCount = 999,
-                viewsCount = 1300000,
-                avatar = R.drawable.netology_avatar,
+                likes = 999,
+                shares = 999,
+                views = 1300000,
+                authorAvatar = R.drawable.netology_avatar.toString(),
                 video = "https://rutube.ru/video/private/0dc6cfcd8b2c38af84a9b5b7f0fa7b4b/?p=WJSCSTVrCahdGZxVH-NjJg"
             )
         )
@@ -95,8 +95,8 @@ class PostRepositoryJsonImpl(private val context: Context) : PostRepository {
         posts = posts.map { post ->
             if (post.id == id) {
                 val newLikedByMe = !post.likedByMe
-                val newLikesCount = if (newLikedByMe) post.likesCount + 1 else post.likesCount - 1
-                post.copy(likedByMe = newLikedByMe, likesCount = newLikesCount)
+                val newLikesCount = if (newLikedByMe) post.likes + 1 else post.likes - 1
+                post.copy(likedByMe = newLikedByMe, likes = newLikesCount)
             } else {
                 post
             }
@@ -108,7 +108,7 @@ class PostRepositoryJsonImpl(private val context: Context) : PostRepository {
     override fun shareById(id: Long) {
         posts = posts.map { post ->
             if (post.id == id) {
-                post.copy(sharesCount = post.sharesCount + 1)
+                post.copy(shares = post.shares + 1)
             } else {
                 post
             }

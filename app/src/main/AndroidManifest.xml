@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="ru.netology.nmedia">
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Для загрузки изображений по HTTP (не HTTPS) в Android 9+ -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +15,7 @@
         android:supportsRtl="true"
         android:name=".NMediaApplication"
         android:theme="@style/Theme.NMedia"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
 
         <activity

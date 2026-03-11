@@ -7,6 +7,8 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.PostItemBinding
 import ru.netology.nmedia.dto.Post
@@ -34,15 +36,24 @@ class PostAdapter(
                 published.text = post.published
                 content.text = post.content
 
-                // Устанавливаем аватар
-                avatar.setImageResource(post.avatar)
+                // Загрузка аватара с сервера с помощью Glide (Задача №1)
+                val avatarUrl = post.authorAvatar?.let {
+                    "http://10.0.2.2:9999/avatars/$it"
+                }
 
-                // Форматируем числа
-                likeButton.text = NumberFormatter.formatCompact(post.likesCount)
-                shareButton.text = NumberFormatter.formatCompact(post.sharesCount)
-                viewsButton.text = NumberFormatter.formatCompact(post.viewsCount)
+                Glide.with(avatar.context)
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.netology_avatar)
+                    .error(R.drawable.netology_avatar)
+                    .transform(CircleCrop()) // Делаем аватар круглым (Задача №2)
+                    .into(avatar)
 
-                // Устанавливаем иконку лайка и цвет
+                // Форматирование чисел
+                likeButton.text = NumberFormatter.formatCompact(post.likes)
+                shareButton.text = NumberFormatter.formatCompact(post.shares)
+                viewsButton.text = NumberFormatter.formatCompact(post.views)
+
+                // Установка иконки лайка
                 if (post.likedByMe) {
                     likeButton.setIconResource(R.drawable.ic_liked_24)
                     likeButton.iconTint = likeButton.context.getColorStateList(R.color.red)
@@ -63,10 +74,24 @@ class PostAdapter(
                     videoPreview.setOnClickListener {
                         onInteractionListener.onVideoClick(post)
                     }
-                    likeButton.constraintParams.topToBottom = videoContainer.id
                 } else {
                     videoContainer.visibility = View.GONE
-                    likeButton.constraintParams.topToBottom = content.id
+                }
+
+                // Обработка вложений (Задача №3)
+                if (post.attachment != null && post.attachment.type.name == "IMAGE") {
+                    attachmentContainer.visibility = View.VISIBLE
+                    attachmentDescription.text = post.attachment.description ?: ""
+
+                    val imageUrl = "http://10.0.2.2:9999/images/${post.attachment.url}"
+                    Glide.with(attachmentImage.context)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.netology_avatar)
+                        .error(R.drawable.netology_avatar)
+                        .centerCrop()
+                        .into(attachmentImage)
+                } else {
+                    attachmentContainer.visibility = View.GONE
                 }
 
                 // Обработчики событий
@@ -78,10 +103,9 @@ class PostAdapter(
                     onInteractionListener.onShare(post)
                 }
 
-                // Меню с тремя точками
                 menu.setOnClickListener { view ->
                     PopupMenu(view.context, view).apply {
-                        menuInflater.inflate(R.menu.post_actions, this.menu)
+                        menuInflater.inflate(R.menu.post_actions, menu)
                         setOnMenuItemClickListener { menuItem ->
                             when (menuItem.itemId) {
                                 R.id.edit -> {
@@ -100,9 +124,6 @@ class PostAdapter(
                 }
             }
         }
-
-        private val android.view.View.constraintParams: androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
-            get() = layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -128,8 +149,10 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
         return oldItem.content == newItem.content &&
                 oldItem.video == newItem.video &&
                 oldItem.likedByMe == newItem.likedByMe &&
-                oldItem.likesCount == newItem.likesCount &&
-                oldItem.sharesCount == newItem.sharesCount &&
-                oldItem.viewsCount == newItem.viewsCount
+                oldItem.likes == newItem.likes &&
+                oldItem.shares == newItem.shares &&
+                oldItem.views == newItem.views &&
+                oldItem.attachment == newItem.attachment &&
+                oldItem.authorAvatar == newItem.authorAvatar
     }
 }
