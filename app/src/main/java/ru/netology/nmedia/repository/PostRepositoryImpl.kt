@@ -1,16 +1,14 @@
 package ru.netology.nmedia.repository
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.netology.nmedia.api.PostsApi
 import ru.netology.nmedia.api.PostsApiService
 import ru.netology.nmedia.dto.Post
 import java.io.IOException
@@ -18,31 +16,12 @@ import java.util.concurrent.TimeUnit
 
 class PostRepositoryImpl : PostRepository {
 
-    private val posts = mutableListOf<Post>()
-    private val dataFlow = MutableStateFlow(posts.toList())
+    private var posts = emptyList<Post>()
+    private val dataFlow = MutableStateFlow(posts)
 
     override val data: Flow<List<Post>> = dataFlow
 
-
-    private val api = run {
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:9999/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        retrofit.create(PostsApiService::class.java)
-    }
+    private val api = PostsApi.retrofitService
 
     override suspend fun getAll() {
         try {
@@ -50,9 +29,8 @@ class PostRepositoryImpl : PostRepository {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    posts.clear()
-                    posts.addAll(body)
-                    dataFlow.emit(posts.toList())
+                    posts = body.toList() // Создаём новый неизменяемый список
+                    dataFlow.emit(posts) // Отправляем новую ссылку
                     Log.d("PostRepository", "Posts loaded: ${posts.size}")
                 }
             } else {
@@ -84,10 +62,12 @@ class PostRepositoryImpl : PostRepository {
             if (response.isSuccessful) {
                 val updatedPost = response.body()
                 if (updatedPost != null) {
-                    val index = posts.indexOfFirst { it.id == id }
-                    if (index != -1) {
-                        posts[index] = updatedPost
+                    // Создаём новый список с обновлённым постом
+                    posts = posts.map { post ->
+                        if (post.id == id) updatedPost else post
                     }
+                    dataFlow.emit(posts)
+                    Log.d("PostRepository", "Post liked/disliked: $id")
                 }
             } else {
                 Log.e("PostRepository", "Error liking post: ${response.code()}")
@@ -107,10 +87,13 @@ class PostRepositoryImpl : PostRepository {
 
     override suspend fun shareById(id: Long) {
         try {
-            val index = posts.indexOfFirst { it.id == id }
-            if (index != -1) {
-                val currentPost = posts[index]
-                posts[index] = currentPost.copy(shares = currentPost.shares + 1)
+            val currentPost = posts.find { it.id == id }
+            if (currentPost != null) {
+                // Создаём новый список с обновлённым счётчиком шаров
+                posts = posts.map { post ->
+                    if (post.id == id) post.copy(shares = post.shares + 1) else post
+                }
+                dataFlow.emit(posts)
                 Log.d("PostRepository", "Shared post with id: $id")
             }
         } catch (e: Exception) {
@@ -126,7 +109,10 @@ class PostRepositoryImpl : PostRepository {
                 if (response.isSuccessful) {
                     val newPost = response.body()
                     if (newPost != null) {
-                        posts.add(0, newPost)
+                        // Создаём новый список с добавленным постом в начало
+                        posts = listOf(newPost) + posts
+                        dataFlow.emit(posts)
+                        Log.d("PostRepository", "Post saved: ${newPost.id}")
                     }
                 } else {
                     throw HttpException(response)
@@ -150,7 +136,10 @@ class PostRepositoryImpl : PostRepository {
         try {
             val response = api.removeById(id)
             if (response.isSuccessful) {
-                posts.removeAll { it.id == id }
+                // Создаём новый список без удалённого поста
+                posts = posts.filter { it.id != id }
+                dataFlow.emit(posts)
+                Log.d("PostRepository", "Post removed: $id")
             } else {
                 throw HttpException(response)
             }
@@ -172,10 +161,12 @@ class PostRepositoryImpl : PostRepository {
             if (response.isSuccessful) {
                 val updatedPost = response.body()
                 if (updatedPost != null) {
-                    val index = posts.indexOfFirst { it.id == post.id }
-                    if (index != -1) {
-                        posts[index] = updatedPost
+                    // Создаём новый список с обновлённым постом
+                    posts = posts.map { existingPost ->
+                        if (existingPost.id == post.id) updatedPost else existingPost
                     }
+                    dataFlow.emit(posts)
+                    Log.d("PostRepository", "Post updated: ${post.id}")
                 }
             } else {
                 throw HttpException(response)

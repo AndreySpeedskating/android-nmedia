@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import ru.netology.nmedia.api.BASE_URL
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +39,7 @@ class PostAdapter(
 
                 // Загрузка аватара с сервера
                 val avatarUrl = post.authorAvatar?.let {
-                    "http://10.0.2.2:9999/avatars/$it"
+                    "${BASE_URL}/avatars/$it"
                 }
 
                 Glide.with(avatar.context)
@@ -83,7 +84,7 @@ class PostAdapter(
                     attachmentContainer.visibility = View.VISIBLE
                     attachmentDescription.text = post.attachment.description ?: ""
 
-                    val imageUrl = "http://10.0.2.2:9999/images/${post.attachment.url}"
+                    val imageUrl = "${BASE_URL}/images/${post.attachment.url}"
                     Glide.with(attachmentImage.context)
                         .load(imageUrl)
                         .placeholder(R.drawable.netology_avatar)
