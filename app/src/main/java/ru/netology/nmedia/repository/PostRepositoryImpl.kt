@@ -3,6 +3,7 @@ package ru.netology.nmedia.repository
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.OkHttpClient
@@ -18,11 +19,10 @@ import java.util.concurrent.TimeUnit
 class PostRepositoryImpl : PostRepository {
 
     private val posts = mutableListOf<Post>()
-    private val dataFlow = flow {
-        emit(posts.toList())
-    }.flowOn(Dispatchers.Default)
+    private val dataFlow = MutableStateFlow(posts.toList())
 
     override val data: Flow<List<Post>> = dataFlow
+
 
     private val api = run {
         val logging = HttpLoggingInterceptor().apply {
@@ -52,6 +52,7 @@ class PostRepositoryImpl : PostRepository {
                 if (body != null) {
                     posts.clear()
                     posts.addAll(body)
+                    dataFlow.emit(posts.toList())
                     Log.d("PostRepository", "Posts loaded: ${posts.size}")
                 }
             } else {

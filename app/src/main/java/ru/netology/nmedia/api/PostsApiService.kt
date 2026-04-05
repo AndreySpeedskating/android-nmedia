@@ -5,24 +5,24 @@ import retrofit2.http.*
 import ru.netology.nmedia.dto.Post
 
 interface PostsApiService {
-    @GET("posts")
+    @GET("api/posts")
     suspend fun getAllPosts(): Response<List<Post>>
 
-    @POST("posts/{id}/likes")
+    @POST("api/posts/{id}/likes")
     suspend fun likeById(@Path("id") id: Long): Response<Post>
 
-    @DELETE("posts/{id}/likes")
+    @DELETE("api/posts/{id}/likes")
     suspend fun dislikeById(@Path("id") id: Long): Response<Post>
 
-    @POST("posts")
+    @POST("api/posts")
     suspend fun savePost(@Body post: Post): Response<Post>
 
-    @PUT("posts/{id}")
+    @PUT("api/posts/{id}")
     suspend fun updatePost(@Path("id") id: Long, @Body post: Post): Response<Post>
 
-    @DELETE("posts/{id}")
+    @DELETE("api/posts/{id}")
     suspend fun removeById(@Path("id") id: Long): Response<Unit>
 
-    @GET("posts/{id}")
+    @GET("api/posts/{id}")
     suspend fun getPostById(@Path("id") id: Long): Response<Post>
 }
